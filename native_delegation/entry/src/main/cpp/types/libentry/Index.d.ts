@@ -1,0 +1,1 @@
+export const doLeak: (f: Function) => void;

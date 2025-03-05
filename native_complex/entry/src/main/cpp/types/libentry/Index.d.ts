@@ -1,0 +1,1 @@
+export const objCallFunction: (obj: Object, func: Function) => string;
