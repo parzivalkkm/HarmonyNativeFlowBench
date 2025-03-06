@@ -1,1 +1,3 @@
-export const add: (a: number, b: number) => number;
+export const clean: (a: object) => void;
+export const clean1: (a: object) => void;
+export const cleanString: (a: string) => string;

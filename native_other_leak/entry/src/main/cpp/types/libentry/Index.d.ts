@@ -1,1 +1,2 @@
-export const add: (a: number, b: number) => number;
+export const leak2File: (a: string) => void;
+export const leak2Internet: (a: string) => void;

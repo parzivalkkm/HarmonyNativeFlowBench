@@ -1,37 +1,57 @@
 #include "napi/native_api.h"
+#include "hilog/log.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
-static napi_value Add(napi_env env, napi_callback_info info)
+static napi_value NAPI_Global_leak2File(napi_env env, napi_callback_info info)
 {
-    size_t argc = 2;
-    napi_value args[2] = {nullptr};
+    size_t argc = 1;
+    napi_value args[1] = {nullptr};
 
     napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
+    
+    char* str = new char[256];
+    napi_get_value_string_utf8(env, args[0], str, NAPI_AUTO_LENGTH, nullptr);
+    
+     int fd = open("/mnt/sdcard/info.txt", O_RDWR | O_CREAT, 0666);
+    if (fd > 0) {
+        write(fd, str, 256);
+        close(fd);
+    } else {
+        OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
+    }
+}
 
-    napi_valuetype valuetype0;
-    napi_typeof(env, args[0], &valuetype0);
+static napi_value NAPI_Global_leak2Internet(napi_env env, napi_callback_info info) {
+    size_t argc = 1;
+    napi_value args[1] = {nullptr};
 
-    napi_valuetype valuetype1;
-    napi_typeof(env, args[1], &valuetype1);
-
-    double value0;
-    napi_get_value_double(env, args[0], &value0);
-
-    double value1;
-    napi_get_value_double(env, args[1], &value1);
-
-    napi_value sum;
-    napi_create_double(env, value0 + value1, &sum);
-
-    return sum;
-
+    napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
+    
+    char* str = new char[256];
+    napi_get_value_string_utf8(env, args[0], str, NAPI_AUTO_LENGTH, nullptr);
+    
+    int sockFD, new_socket;
+    char * message;
+    if ((sockFD = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
+        return nullptr;
+    }
+    if (connect(sockFD, (struct sockaddr *)&sockFD, sizeof(sockFD)) < 0) {
+        OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
+        return nullptr;
+    }
+    OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
 }
 
 EXTERN_C_START
-static napi_value Init(napi_env env, napi_value exports)
-{
+static napi_value Init(napi_env env, napi_value exports) {
     napi_property_descriptor desc[] = {
-        { "add", nullptr, Add, nullptr, nullptr, nullptr, napi_default, nullptr }
-    };
+        {"leak2File", nullptr, NAPI_Global_leak2File, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"leak2Internet", nullptr, NAPI_Global_leak2Internet, nullptr, nullptr, nullptr, napi_default, nullptr}};
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     return exports;
 }

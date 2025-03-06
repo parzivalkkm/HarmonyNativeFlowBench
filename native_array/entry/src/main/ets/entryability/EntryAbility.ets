@@ -12,8 +12,10 @@ export default class EntryAbility extends UIAbility {
 
     let arr1 = ["", "", "", "", ""]
     testNapi.setArray1(arr1,info)
-    let arr1element = arr1[1]
-    hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', arr1element);
+    let taintedData = arr1[1]
+    hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', taintedData);
+    let untaintedData = arr1[0]
+    hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', untaintedData);
   }
 
 };

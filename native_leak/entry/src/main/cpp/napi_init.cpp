@@ -9,7 +9,7 @@ static napi_value Leak(napi_env env, napi_callback_info info)
     napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
     
     char* str = new char[256];
-    napi_get_value_string_utf8(env, args[0], str, 0, nullptr);
+    napi_get_value_string_utf8(env, args[0], str, NAPI_AUTO_LENGTH, nullptr);
     
     OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
     
