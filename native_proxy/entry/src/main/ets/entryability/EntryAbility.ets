@@ -12,7 +12,7 @@ export default class EntryAbility extends UIAbility {
     hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', info1);
 
     let info2 = testNapi.proxy_copy(info);
-    hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', info1);
+    hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', info2);
   }
 
 };
