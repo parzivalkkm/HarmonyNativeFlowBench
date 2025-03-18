@@ -20,6 +20,7 @@ static napi_value NAPI_Global_leakArray0(napi_env env, napi_callback_info info) 
         OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
     }
 }
+
 static napi_value NAPI_Global_setArray1(napi_env env, napi_callback_info info) {
     size_t argc = 2;
     napi_value args[2] = {nullptr};
@@ -33,6 +34,7 @@ static napi_value NAPI_Global_setArray1(napi_env env, napi_callback_info info) {
         napi_set_element(env, args[0], 1, args[1]);
     }
 }
+
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports) {
     napi_property_descriptor desc[] = {
