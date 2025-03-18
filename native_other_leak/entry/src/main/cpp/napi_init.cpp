@@ -1,10 +1,12 @@
 #include "napi/native_api.h"
 #include "hilog/log.h"
+#include <cstring>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 static napi_value NAPI_Global_leak2File(napi_env env, napi_callback_info info)
 {
@@ -25,27 +27,31 @@ static napi_value NAPI_Global_leak2File(napi_env env, napi_callback_info info)
     }
 }
 
-static napi_value NAPI_Global_leak2Internet(napi_env env, napi_callback_info info) {
-    size_t argc = 1;
-    napi_value args[1] = {nullptr};
-
-    napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
+    static napi_value NAPI_Global_leak2Internet(napi_env env, napi_callback_info info) {
+        size_t argc = 1;
+        napi_value args[1] = {nullptr};
     
-    char* str = new char[256];
-    napi_get_value_string_utf8(env, args[0], str, NAPI_AUTO_LENGTH, nullptr);
-    
-    int sockFD, new_socket;
-    char * message;
-    if ((sockFD = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
+        
+        char* str = new char[256];
+        napi_get_value_string_utf8(env, args[0], str, NAPI_AUTO_LENGTH, nullptr);
+        
+        int sockFD, new_socket;
+        char * message;
+        if ((sockFD = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+            OH_LOG_INFO(LOG_APP, "Leak LastLocation Socket Create Failed:%{public}s", strerror(errno));
+            return nullptr;
+        }
+        if (connect(sockFD, (struct sockaddr *)&sockFD, sizeof(sockFD)) < 0) {
+            OH_LOG_INFO(LOG_APP, "Leak LastLocation Connect Failed:%{public}s", strerror(errno));
+            return nullptr;
+        }
+        if (write(sockFD, str, strlen(str)) <= 0) {
+            OH_LOG_INFO(LOG_APP, "Leak LastLocation Write Failed:%{public}s", strerror(errno));
+            return nullptr;
+        }
         OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
-        return nullptr;
     }
-    if (connect(sockFD, (struct sockaddr *)&sockFD, sizeof(sockFD)) < 0) {
-        OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
-        return nullptr;
-    }
-    OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
-}
 
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports) {
