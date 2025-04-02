@@ -20,19 +20,16 @@ static napi_value Clean1(napi_env env, napi_callback_info info){
     napi_set_named_property(env , argv[0], "lastLocation", newStr);
 }
 
-static napi_value cleanStringInAnotherFunction(napi_env env, napi_value ori, napi_value ret) {
-    napi_create_string_utf8(env, "Cleaned again!", NAPI_AUTO_LENGTH, &ori);
-    ret = ori;
-    return ret;
+static void cleanStringInAnotherFunction(napi_env env, napi_value* ori) {
+    napi_create_string_utf8(env, "Cleaned again!", NAPI_AUTO_LENGTH, ori);
 }
 
 static napi_value NAPI_Global_cleanString(napi_env env, napi_callback_info info) {
     size_t argc = 1;
     napi_value argv[1] = {nullptr};
     napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-    napi_value ret = nullptr;
-    cleanStringInAnotherFunction(env, argv[0], ret);
-    return ret;
+    cleanStringInAnotherFunction(env, &argv[0]);
+    return argv[0];
 }
 
 EXTERN_C_START
