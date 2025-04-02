@@ -15,7 +15,7 @@ static napi_value NAPI_Global_leakArray0(napi_env env, napi_callback_info info) 
         napi_get_element(env, args[0], 0, &array0);
         
         char* str = new char[256];
-        napi_get_value_string_utf8(env, args[0], str, 0, nullptr);
+        napi_get_value_string_utf8(env, array0, str, 0, nullptr);
         
         OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
     }
