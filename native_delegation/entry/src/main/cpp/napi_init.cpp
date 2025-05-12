@@ -13,7 +13,7 @@ static napi_value DoLeak(napi_env env, napi_callback_info info){
     // 调用ArkTS方法
     napi_value result = nullptr;
     // 调用napi_call_function时传入的argv的长度必须大于等于argc声明的数量，且被初始化成nullptr
-    napi_call_function(env, global, args[0], argc, args, &result);
+    napi_call_function(env, global, args[0], 0, nullptr, &result);
 
     
     char* str = (char*) malloc(256);
