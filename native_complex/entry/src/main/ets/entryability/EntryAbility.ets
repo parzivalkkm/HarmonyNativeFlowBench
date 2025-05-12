@@ -17,12 +17,18 @@ class LastLocationData {
 }
 
 
+function leakIntoLog(info1 : string, info2 : string){
+  hilog.info(0x0000, 'testTag', 'info1: %{public}s info2: %{public}s', info1,info2);
+}
+
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     let leak = JSON.stringify(geoLocationManager.getLastLocation())
     const data = new LastLocationData(leak);
     let info = testNapi.objCallFunction(data,data.getLastLocation);
     hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', info);
+
+    testNapi.callFunctionWith2Args(leakIntoLog, 'info1', leak);
   }
 
 };
