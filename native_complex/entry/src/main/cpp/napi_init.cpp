@@ -29,12 +29,36 @@ static napi_value CallFunctionWith2Args(napi_env env, napi_callback_info info)
     napi_call_function(env, global, argv[0], 2, &argv[1], &result);
     return result;
 }
+
+static napi_value SetNamedProperty(napi_env env, napi_callback_info info)
+{
+
+    size_t argc = 3;
+    napi_value argv[3] = {nullptr};
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    napi_value result = nullptr;
+    napi_set_property(env, argv[0], argv[1], argv[2]);
+    return result;
+}
+
+static napi_value GetNamedProperty(napi_env env, napi_callback_info info)
+{
+
+    size_t argc = 2;
+    napi_value argv[2] = {nullptr};
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    napi_value result = nullptr;
+    napi_get_property(env, argv[0], argv[1], &result);
+    return result;
+}
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
         { "objCallFunction", nullptr, ObjCallFunction, nullptr, nullptr, nullptr, napi_default, nullptr },
-        { "callFunctionWith2Args", nullptr, CallFunctionWith2Args, nullptr, nullptr, nullptr, napi_default, nullptr }
+        { "callFunctionWith2Args", nullptr, CallFunctionWith2Args, nullptr, nullptr, nullptr, napi_default, nullptr },
+        { "setNamedProperty", nullptr, SetNamedProperty, nullptr, nullptr, nullptr, napi_default, nullptr },
+        { "getNamedProperty", nullptr, GetNamedProperty, nullptr, nullptr, nullptr, napi_default, nullptr },
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     return exports;
