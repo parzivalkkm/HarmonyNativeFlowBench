@@ -13,14 +13,31 @@ static napi_value Leak(napi_env env, napi_callback_info info)
     
     OH_LOG_INFO(LOG_APP, "Leak LastLocation %{public}s", str);
     
+    return nullptr;
+}
 
+static napi_value LeakByCall(napi_env env, napi_callback_info info)
+{
+    size_t argc = 2;
+    napi_value args[2] = {nullptr};
+
+    napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
+    // 获取全局对象，这里用global是因为napi_call_function的第二个参数是JS函数的this入参。
+    napi_value global = nullptr;
+    napi_get_global(env, &global);
+    
+    napi_value result = nullptr;
+    napi_call_function(env, global, args[0],  1, &args[1], &result);
+    
+    return result;
 }
 
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
-        { "leak", nullptr, Leak, nullptr, nullptr, nullptr, napi_default, nullptr }
+        { "leak", nullptr, Leak, nullptr, nullptr, nullptr, napi_default, nullptr },
+        { "leakByCall", nullptr, LeakByCall, nullptr, nullptr, nullptr, napi_default, nullptr }
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     return exports;
