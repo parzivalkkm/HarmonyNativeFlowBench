@@ -15,7 +15,7 @@ export default class EntryAbility extends UIAbility {
     let taintedData = arr1[1]
     hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', taintedData);
     let untaintedData = arr1[0]
-    hilog.info(0x0000, 'testTag', 'leak LastLocation %{public}s', untaintedData);
+    hilog.info(0x0000, 'testTag', 'leak untaintedData %{public}s', untaintedData);
   }
 
 };

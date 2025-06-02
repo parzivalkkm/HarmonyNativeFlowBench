@@ -8,5 +8,4 @@ export default class EntryAbility extends UIAbility {
     let info = JSON.stringify(geoLocationManager.getLastLocation()); //source
     testNapi.leak(info);//sink, leak
   }
-
 };
