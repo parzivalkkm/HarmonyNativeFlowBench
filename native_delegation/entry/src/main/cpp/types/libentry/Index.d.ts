@@ -1,2 +1,2 @@
 export const callSourceAndLeak: (f: Function) => void;
-export const callFunction: (func: Function) => string;
+export const callSourceAndSink: (source:  Function, sink: Function) => void;

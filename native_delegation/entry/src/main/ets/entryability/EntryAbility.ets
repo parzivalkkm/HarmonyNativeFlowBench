@@ -7,9 +7,8 @@ function getLastLocationString(): string{
   return JSON.stringify(geoLocationManager.getLastLocation()); //source
 }
 
-function delegationInArkTs(): void{
-  let taint = JSON.stringify(geoLocationManager.getLastLocation()); //source
-  hilog.info(0x0001, 'EntryAbility', "Oops! there is a leak in arkts: %{public}s", taint);
+function leakInArkTsFunction(info: string){
+  hilog.info(0x0000, 'testTag', 'leak in arkTs func %{public}s', info); //sink
 }
 
 export default class EntryAbility extends UIAbility {
@@ -17,7 +16,7 @@ export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
 
     testNapi.callSourceAndLeak(getLastLocationString);
-    testNapi.callFunction(delegationInArkTs);
+    testNapi.callSourceAndSink(getLastLocationString, leakInArkTsFunction);
 
   }
 
