@@ -1,43 +1,31 @@
 #include "napi/native_api.h"
 
-static napi_value Clean(napi_env env, napi_callback_info info){
-    size_t argc = 1;
-    napi_value argv[1] = {nullptr};
-    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-    napi_value newStr = nullptr;
-    napi_create_string_utf8(env, "Cleaned!", NAPI_AUTO_LENGTH, &newStr);
-    napi_value key = nullptr;
-    napi_create_string_utf8(env, "lastLocation", NAPI_AUTO_LENGTH, &key);
-    napi_set_property(env , argv[0], key, newStr);
+static napi_value SetProperty(napi_env env, napi_callback_info info)
+{
+    // 接收ArkTS侧传入的三个参数：第一个参数为想要设置的object，第二个参数为属性，第三个参数为属性对应的值
+    size_t argc = 3;
+    napi_value args[3] = {nullptr};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_set_property(env, args[0], args[1], args[2]);
 }
 
-static napi_value Clean1(napi_env env, napi_callback_info info){
-    size_t argc = 1;
-    napi_value argv[1] = {nullptr};
-    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-    napi_value newStr = nullptr;
-    napi_create_string_utf8(env, "Cleaned again!", NAPI_AUTO_LENGTH, &newStr);
-    napi_set_named_property(env , argv[0], "lastLocation", newStr);
+static napi_value SetNamedProperty(napi_env env, napi_callback_info info)
+{
+    // 接收ArkTS侧传入的两个参数：第一个参数为想要设置的object，第二个参数为属性对应的值
+    size_t argc = 3;
+    napi_value args[3] = {nullptr};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_set_named_property(env, args[0], "lastLocation", args[2]);
 }
 
-static void cleanStringInAnotherFunction(napi_env env, napi_value* ori) {
-    napi_create_string_utf8(env, "Cleaned again!", NAPI_AUTO_LENGTH, ori);
-}
 
-static napi_value NAPI_Global_cleanString(napi_env env, napi_callback_info info) {
-    size_t argc = 1;
-    napi_value argv[1] = {nullptr};
-    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-    cleanStringInAnotherFunction(env, &argv[0]);
-    return argv[0];
-}
 
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports) {
     napi_property_descriptor desc[] = {
-        {"clean", nullptr, Clean, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"clean1", nullptr, Clean1, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"cleanString", nullptr, NAPI_Global_cleanString, nullptr, nullptr, nullptr, napi_default, nullptr}};
+        {"setProperty", nullptr, SetProperty, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"setNamedProperty", nullptr, SetNamedProperty, nullptr, nullptr, nullptr, napi_default, nullptr}
+    };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     return exports;
 }

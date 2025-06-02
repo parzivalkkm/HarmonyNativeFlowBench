@@ -1,3 +1,3 @@
-export const clean: (a: object) => void;
-export const clean1: (a: object) => void;
-export const cleanString: (a: string) => string;
+
+export const setProperty: (obj: Object, key: String, value: string) => void;
+export const setNamedProperty: (obj: Object, value: string) => void;
