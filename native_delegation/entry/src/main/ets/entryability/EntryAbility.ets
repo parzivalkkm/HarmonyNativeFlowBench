@@ -9,7 +9,7 @@ function getLastLocationString(): string{
 
 function delegationInArkTs(): void{
   let taint = JSON.stringify(geoLocationManager.getLastLocation()); //source
-  hilog.info(0x0001, 'EntryAbility', "Oops! there is a leak in cpp: %{public}s", taint);
+  hilog.info(0x0001, 'EntryAbility', "Oops! there is a leak in arkts: %{public}s", taint);
 }
 
 export default class EntryAbility extends UIAbility {
