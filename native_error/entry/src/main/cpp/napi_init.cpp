@@ -27,7 +27,7 @@ static napi_value ThrowErrorWithTaint(napi_env env, napi_callback_info info) {
     
     napi_get_cb_info(env, info, &argc, args , nullptr, nullptr);
     
-    char errorMessage[256];
+    char* errorMessage = new char[256];
     napi_get_value_string_utf8(env, args[0], errorMessage, NAPI_AUTO_LENGTH, nullptr);
     
     // napi_throw_error抛出 错误
