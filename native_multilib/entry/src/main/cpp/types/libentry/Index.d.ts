@@ -1,0 +1,1 @@
+export const proxy: (a: string) => string;
