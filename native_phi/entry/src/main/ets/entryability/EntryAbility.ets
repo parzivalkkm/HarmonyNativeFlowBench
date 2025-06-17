@@ -17,11 +17,11 @@ export default class EntryAbility extends UIAbility {  onCreate(want: Want, laun
     hilog.info(0x0000, 'testTag', 'ContractPhiTest StrCat: str1 +str2 = %{public}s', result);
 
     // 测试 contractPhiLeakTest (字符串连接并泄漏)
-    let result = testNapi.contractPhiLeakTest(str1, str2);
+    testNapi.contractPhiLeakTest(str1, str2);
   
 
     // 测试 branchPhiTest
-    let result = testNapi.branchPhiTest("Branch", "Test");
+    let result1 = testNapi.branchPhiTest("Branch", "Test");
     hilog.info(0x0000, 'testTag', 'BranchPhiTest result: %{public}s', result);
   }
 
